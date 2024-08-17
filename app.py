@@ -13,7 +13,7 @@ from flask_limiter.util import get_remote_address
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 
 
-from api_btg_mfo_utils import process_account_data
+from api_btg_mfo_utils import process_account_data, get_total_amount
 
 
 # Inicializa o Flask
