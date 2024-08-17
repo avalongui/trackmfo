@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avalon MFO</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            display: flex;
+            justify-content: space-between;
+        }
+        .left-panel {
+            width: 30%;  /* Reduz a largura do painel esquerdo */
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+            height: 500px;
+        }
+        .right-panel {
+            width: 65%;  /* Aumenta a largura do painel direito */
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .table th, .table td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        .table-striped tbody tr:nth-child(odd) {
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <h1>Avalon MFO</h1>
+    <div class="container">
+        <div class="left-panel">
+            <h3>BI Information</h3>
+            {{ df_cobranca | safe }}
+        </div>
+        <div class="right-panel">
+            <h3>Select Client</h3>
+            <form method="POST">
+                <select name="client_select" onchange="this.form.submit()">
+                    {% for client_id in data_plot.keys() %}
+                        <option value="{{ client_id }}" {% if client_id == selected_client %}selected{% endif %}>{{ client_id }}</option>
+                    {% endfor %}
+                </select>
+            </form>
+            <h3>Portfolio Allocation</h3>
+            <img src="data:image/png;base64,{{ histogram_image }}" alt="Histogram">
+        </div>
+    </div>
+</body>
+</html>

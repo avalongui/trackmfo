@@ -142,7 +142,7 @@ def job():
         'data_btg': data_btg_dict
         }
     
-    url = 'https://trackfia-3ae72ebff575.herokuapp.com/update_data'
+    url = 'https://trackmfo-8ff09a37ebe2.herokuapp.com/update_data'
 
     response = requests.post(url, json=data_to_send)
 
@@ -151,7 +151,6 @@ def job():
     else:
         print("Failed to update data on Heroku:", response.text)
     
-
 
 
 if __name__ == '__main__':
