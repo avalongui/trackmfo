@@ -8,4 +8,3 @@ flask-login
 Flask-Limiter
 tqdm
 openpyxl
-wget==3.2
