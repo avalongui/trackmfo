@@ -13,14 +13,14 @@
             justify-content: space-between;
         }
         .left-panel {
-            width: 30%;  /* Reduz a largura do painel esquerdo */
+            width: 30%;
             padding: 20px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             overflow-y: auto;
             height: 500px;
         }
         .right-panel {
-            width: 65%;  /* Aumenta a largura do painel direito */
+            width: 65%;
             padding: 20px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             text-align: center;
@@ -48,7 +48,8 @@
         </div>
         <div class="right-panel">
             <h3>Select Client</h3>
-            <form method="POST">
+            <!-- Certifique-se de que o método POST está especificado aqui -->
+            <form method="POST" action="{{ url_for('index') }}">
                 <select name="client_select" onchange="this.form.submit()">
                     {% for client_id in data_plot.keys() %}
                         <option value="{{ client_id }}" {% if client_id == selected_client %}selected{% endif %}>{{ client_id }}</option>
