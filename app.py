@@ -1,126 +1,50 @@
-# import os
-# import base64
-# import logging
-# import requests
-# import numpy as np
-# import pandas as pd
-# from io import BytesIO
-# from datetime import datetime
-# import matplotlib.pyplot as plt
-# from flask import Flask, render_template, redirect, url_for, request, jsonify, flash
-# from flask_limiter import Limiter
-# from flask_limiter.util import get_remote_address
-# from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
-
-
-# from api_btg_mfo_utils import process_account_data, get_total_amount
-
-
-# # Inicializa o Flask
-# app = Flask(__name__)
-
-# # Configurações de Limiter
-# limiter = Limiter(
-#     get_remote_address,
-#     app=app,
-#     default_limits=['200 per day', '50 per hour']
-# )
-
-# # Configurações do Flask
-# app.config['SECRET_KEY'] = 'Avalon@123'
-
-# # Inicializa o LoginManager
-# login_manager = LoginManager()
-# login_manager.init_app(app)
-# login_manager.login_view = 'login'
-
-# # Configuração de Log
-# logging.basicConfig(level=logging.DEBUG)
-
-# # Usuários e Data Store
-# users = {'admin': {'password': 'Avalon@123'}}
-# data_store = None
-
-
-# class User(UserMixin):
-#     def __init__(self, id):
-#         self.id = id
-
-
-# @login_manager.user_loader
-# def load_user(user_id):
-#     return User(user_id)
-
-
-# @app.route('/login', methods=['GET', 'POST'])
-# @limiter.limit('5 per minute')
-# def login():
-#     if request.method == 'POST':
-#         username = request.form['username']
-#         password = request.form['password']
-#         if username in users and users[username]['password'] == password:
-#             user = User(username)
-#             login_user(user)
-#             return redirect(url_for('index'))
-#         else:
-#             flash('Invalid username or password', 'error')
-#     return render_template('login.html')
-
-
-# @app.route('/logout')
-# @login_required
-# def logout():
-#     logout_user()
-#     return redirect(url_for('login'))
-
-import sys
-from flask import Flask, render_template, redirect, url_for, request, jsonify, flash
-from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
-import pandas as pd
-from pathlib import Path
-import matplotlib.pyplot as plt
-import matplotlib.colors as mcolors
-from io import BytesIO
+import os
 import base64
-from datetime import datetime, timedelta
+import logging
+import requests
+import numpy as np
+import pandas as pd
+from io import BytesIO
+from datetime import datetime
+import matplotlib.pyplot as plt
+from flask import Flask, render_template, redirect, url_for, request, jsonify, flash
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 
-def sys_path(choose_path):
-    sys.path.append(str(choose_path))
 
-home = Path.home()
-apibtg_path = Path(home, 'Documents/GitHub/avaloncapital/api_btg')
-local_path = Path(home, 'Documents/GitHub/avaloncapital/track_mfo_local')
-mt5_connect = Path(home, 'Documents/GitHub/avaloncapital/mt5_utils')
-path_list = [apibtg_path, local_path, mt5_connect]
-
-if str(mt5_connect) not in sys.path:
-    for path in path_list:
-        sys_path(path)
-
-# from mt5_connect import initialize, prepare_symbol, get_prices_mt5
 from api_btg_mfo_utils import process_account_data, get_total_amount
 
-# mt5_path = Path('C:/', 'Program Files', 'MetaTrader 5', 'terminal64.exe')
-# initialize(user_path=str(mt5_path), server='XPMT5-DEMO', login=52276888, key='Cg21092013PM#')
 
-# mt5_path = Path('C:/', 'Program Files', 'Rico - MetaTrader 5', 'terminal64.exe')
-# initialize(user_path=str(mt5_path), server='GenialInvestimentos-PRD', login=156691, key='Avca@1985')
-
+# Inicializa o Flask
 app = Flask(__name__)
-# pl_fundo = 1_700_000.00
 
+# Configurações de Limiter
+limiter = Limiter(
+    get_remote_address,
+    app=app,
+    default_limits=['200 per day', '50 per hour']
+)
+
+# Configurações do Flask
 app.config['SECRET_KEY'] = 'Avalon@123'
 
+# Inicializa o LoginManager
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
+
+# Configuração de Log
+logging.basicConfig(level=logging.DEBUG)
+
+# Usuários e Data Store
+users = {'admin': {'password': 'Avalon@123'}}
+data_store = None
 
 
 class User(UserMixin):
     def __init__(self, id):
         self.id = id
-
-users = {'admin': {'password': 'Avalon@123'}}
 
 
 @login_manager.user_loader
@@ -129,19 +53,16 @@ def load_user(user_id):
 
 
 @app.route('/login', methods=['GET', 'POST'])
+@limiter.limit('5 per minute')
 def login():
-    print("Login page accessed")
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        print(f"Attempting login with username: {username} and password: {password}")
         if username in users and users[username]['password'] == password:
             user = User(username)
             login_user(user)
-            print("Login successful")
             return redirect(url_for('index'))
         else:
-            print("Login failed")
             flash('Invalid username or password', 'error')
     return render_template('login.html')
 
@@ -152,6 +73,85 @@ def logout():
     logout_user()
     return redirect(url_for('login'))
 
+# import os
+# import sys
+# from flask import Flask, render_template, redirect, url_for, request, jsonify, flash
+# from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+# import pandas as pd
+# from pathlib import Path
+# import matplotlib.pyplot as plt
+# import matplotlib.colors as mcolors
+# from io import BytesIO
+# import base64
+# from datetime import datetime, timedelta
+
+# def sys_path(choose_path):
+#     sys.path.append(str(choose_path))
+
+# home = Path.home()
+# apibtg_path = Path(home, 'Documents/GitHub/avaloncapital/api_btg')
+# local_path = Path(home, 'Documents/GitHub/avaloncapital/track_mfo_local')
+# mt5_connect = Path(home, 'Documents/GitHub/avaloncapital/mt5_utils')
+# path_list = [apibtg_path, local_path, mt5_connect]
+
+# if str(mt5_connect) not in sys.path:
+#     for path in path_list:
+#         sys_path(path)
+
+# # from mt5_connect import initialize, prepare_symbol, get_prices_mt5
+# from api_btg_mfo_utils import process_account_data, get_total_amount
+
+# # mt5_path = Path('C:/', 'Program Files', 'MetaTrader 5', 'terminal64.exe')
+# # initialize(user_path=str(mt5_path), server='XPMT5-DEMO', login=52276888, key='Cg21092013PM#')
+
+# # mt5_path = Path('C:/', 'Program Files', 'Rico - MetaTrader 5', 'terminal64.exe')
+# # initialize(user_path=str(mt5_path), server='GenialInvestimentos-PRD', login=156691, key='Avca@1985')
+
+# app = Flask(__name__)
+# # pl_fundo = 1_700_000.00
+
+# app.config['SECRET_KEY'] = 'Avalon@123'
+
+# login_manager = LoginManager()
+# login_manager.init_app(app)
+# login_manager.login_view = 'login'
+
+
+# class User(UserMixin):
+#     def __init__(self, id):
+#         self.id = id
+
+# users = {'admin': {'password': 'Avalon@123'}}
+
+
+# @login_manager.user_loader
+# def load_user(user_id):
+#     return User(user_id)
+
+
+# @app.route('/login', methods=['GET', 'POST'])
+# def login():
+#     print("Login page accessed")
+#     if request.method == 'POST':
+#         username = request.form['username']
+#         password = request.form['password']
+#         print(f"Attempting login with username: {username} and password: {password}")
+#         if username in users and users[username]['password'] == password:
+#             user = User(username)
+#             login_user(user)
+#             print("Login successful")
+#             return redirect(url_for('index'))
+#         else:
+#             print("Login failed")
+#             flash('Invalid username or password', 'error')
+#     return render_template('login.html')
+
+
+# @app.route('/logout')
+# @login_required
+# def logout():
+#     logout_user()
+#     return redirect(url_for('login'))
 
 
 @app.route('/update_data', methods=['POST'])
@@ -345,3 +345,8 @@ def index():
         histogram_image = None  # Ou alguma imagem padrão ou mensagem de erro
 
     return render_template('index.html', df_cobranca=df_cobranca.to_html(classes='table table-striped', border=0), data_plot=data_plot, selected_client=selected_client, histogram_image=histogram_image)
+
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
