@@ -178,7 +178,7 @@ def plot_histogram(client_id, data):
     return base64.b64encode(buf.getvalue()).decode('utf-8')
 
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 @login_required
 def index():
     global data_store
@@ -332,11 +332,7 @@ def index():
             no_pl.append(client_id)
 
     selected_client = int(request.form.get('client_select')) if request.method == 'POST' else list(data_plot.keys())[0]
-    
-    # Imprimindo informações para depuração
-    print(f"Selected Client: {selected_client}")
-    print(f"Data Plot Keys: {list(data_plot.keys())}")
-    
+
     # Verificar se o selected_client está no data_plot
     if selected_client in data_plot:
         histogram_image = plot_histogram(selected_client, data_plot[selected_client])
