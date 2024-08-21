@@ -275,7 +275,6 @@ def index():
         cobranca_por_cliente[internal_id] = tx_mes
         cash[internal_id] = cash_df
         contas[internal_id]['cash'] = cash_df
-
     
     # Valor cobranca mensal
     df_cobranca = pd.DataFrame(cobranca_por_cliente, index=[0]).T
@@ -285,6 +284,7 @@ def index():
     df_cobranca.set_index('Conta', inplace=True)
     df_cobranca.index.name = ''
     df_cobranca.drop(columns=['Id'], inplace=True)
+    df_cobranca.drop(columns=['index'], inplace=True)
     
     # Total em cash - clientes
     df_cash = pd.concat(cash)
